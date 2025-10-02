@@ -135,7 +135,8 @@ def main():
             pass
         except serial.SerialException:
             status_var.set(f"Fail: Device disconnected. Exiting.")
-            root.after(2000,root.destroy)
+            ser.close()
+            root.after(5000,main)
             return
         root.after(1000, update_readings)
     
