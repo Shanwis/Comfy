@@ -1,7 +1,4 @@
 # Desk Comfort Detector
-![Python](https://img.shields.io/badge/python-3.6+-blue.svg)
-![PlatformIO](https://img.shields.io/badge/PlatformIO-ESP32-orange.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
 
 Hey guys, this is my first IoT related project,a real-time desktop application that monitors temperature and humidity at your desk using an ESP32 and a DHT sensor, while providing a clean GUI and alerts for uncomfortable conditions.
 
@@ -106,7 +103,7 @@ options:
                         Set lowest acceptable temperature
   -hh HUMIDITYMAX, --humiditymax HUMIDITYMAX 
                         Set highest acceptable humidity
-  -hl; HUMIDITYLOW, --humiditylow HUMIDITYLOW 
+  -h; HUMIDITYLOW, --humiditylow HUMIDITYLOW 
                         Set lowest acceptable humidity
   -s SNOOZE, --snooze SNOOZE 
                 The amount of time between each notification
