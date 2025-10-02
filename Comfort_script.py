@@ -52,25 +52,28 @@ def main():
     root.resizable(False,False)
     root.configure(bg='#2E2E2E')
     #Assigning the special tkinter variables 
-    temp_var = tk.StringVar(value="-- C")
+    temp_var = tk.StringVar(value="--°C")
     humidity_var = tk.StringVar(value="--%")
     status_var = tk.StringVar(value = "Connecting....")
 
     label_font = font.Font(family="Helvetica", size=16)
+    thresh_font = font.Font(family="Helvetica", size=12, slant="italic")
     value_font = font.Font(family="Helvetica", size=36, weight="bold")
     status_font = font.Font(family="Helvetica", size=10)
 
     #Setting up temp
-    tk.Label(root, text="Temperature:", font = label_font,fg='white',bg='#2E2E2E').grid(row=0,column=0,padx=20,pady=10, sticky="w")
+    tk.Label(root, text="Temperature:", font = label_font,fg='white',bg='#2E2E2E').grid(row=0,column=0,padx=20,pady=(10,0), sticky="w")
     temp_value_label = tk.Label(root,textvariable=temp_var, font = value_font,fg='#00BFFF',bg='#2E2E2E')
-    temp_value_label.grid(row=0,column=1,padx=20,pady=10,sticky="e")
+    temp_value_label.grid(row=0,column=1,rowspan=2,padx=20,pady=10,sticky="nse")
+    tk.Label(root, text=F"{TEMP_LOW} to {TEMP_HIGH}", font = thresh_font,fg='white',bg='#2E2E2E').grid(row=1,column=0,padx=20,pady=(0, 10), sticky="w")
     #setting up humidity
-    tk.Label(root, text='Humidity: ', font = label_font,fg='white',bg='#2E2E2E').grid(row=1,column=0,padx=20,pady=10,sticky="w")
+    tk.Label(root, text='Humidity: ', font = label_font,fg='white',bg='#2E2E2E').grid(row=2,column=0,padx=20,pady=(10,0),sticky="w")
     humidity_value_label = tk.Label(root, textvariable=humidity_var, font= value_font,fg='#00BFFF',bg='#2E2E2E')
-    humidity_value_label.grid(row=1,column=1,padx=20,pady=10,sticky="e")
+    humidity_value_label.grid(row=2,column=1,rowspan=2,padx=20,pady=10,sticky="nse")
+    tk.Label(root, text=F"{HUM_LOW}% to {HUM_HIGH}%", font = thresh_font,fg='white',bg='#2E2E2E').grid(row=3,column=0,padx=20,pady=(0,10), sticky="w")
     #Setting up status
     status_value_label = tk.Label(root,textvariable=status_var, font=status_font,fg='grey',bg='#2E2E2E')
-    status_value_label.grid(row=2, column=0, columnspan=2, padx=10, pady=10, sticky="ew")
+    status_value_label.grid(row=4, column=0, columnspan=2, padx=10, pady=10, sticky="ew")
     #Arranging in grid
     root.grid_columnconfigure(1, weight=1)
 
@@ -95,26 +98,26 @@ def main():
                 humidity = float(parts[1].split(':')[1])
 
                 #Updating GUI
-                temp_var.set(f"{temp:.2f} C")
+                temp_var.set(f"{temp:.2f}°C")
                 humidity_var.set(f"{humidity:.2f} %")
 
                 issues = [] # to input the problems at the moment if any
 
                 if temp > TEMP_HIGH:
-                    issues.append(f"It's getting hot ({temp: .2f} C)")
-                    temp_value_label.config(fg="#BE0707")
+                    issues.append(f"It's getting hot ({temp: .2f}°C)")
+                    temp_value_label.config(fg='orange red')
                 elif temp < TEMP_LOW:
-                    issues.append(f"It's a bit chilly ({temp:.2f}) C")
-                    temp_value_label.config(fg="#BE0707")
+                    issues.append(f"It's a bit chilly ({temp:.2f})°C")
+                    temp_value_label.config(fg='dodger blue')
                 else:
                     temp_value_label.config(fg='#00BFFF')
 
                 if humidity > HUM_HIGH:
                     issues.append(f"It's feeling stuffy ({humidity:.2f}) %")
-                    humidity_value_label.config(fg="#BE0707")
+                    humidity_value_label.config(fg='gold')
                 elif humidity < HUM_LOW:
                     issues.append(f"It's a bit dry here ({humidity:.2f}) %")
-                    humidity_value_label.config(fg="#BE0707")
+                    humidity_value_label.config(fg='light slate gray')
                 else:
                     humidity_value_label.config(fg='#00BFFF')
 

@@ -2,6 +2,8 @@
 
 Hey guys, this is my first IoT related project,a real-time desktop application that monitors temperature and humidity at your desk using an ESP32 and a DHT sensor, while providing a clean GUI and alerts for uncomfortable conditions.
 
+![Components](./Screenshots/Components.jpeg)
+
 ## Description
 
 This project combines hardware interfacing with desktop application development. I used an ESP32 microcontroller to read data from a DHT11 (a DHT22 can also be used, only minor changes would be needed) and sends it via serial communication to a python script. The data is displayed in a real-time tkinter GUI, with color changes to indicate comfort levels. It also provides desktop notifications when levels go beyond user-defined thresholds.
@@ -9,9 +11,13 @@ This project combines hardware interfacing with desktop application development.
 ## Features
 
 * **Real-Time Display:** A clean Tkinter GUI shows live temperature and humidity readings.
+![GUI](./Screenshots/GUI.png)
+
 * **Dynamic Visual Feedback:** Reading colors change dynamically for at-a-glance status.
 * **Configurable Thresholds:** Easily set your own comfort limits for temperature and humidity via command-line arguments.
 * **Desktop Notifications:** Get pop-up alerts with sound when conditions are uncomfortable.
+![GUI](./Screenshots/Notification.png)
+
 * **Adjustable Snooze:** Control how often notifications appear with a configurable snooze timer.
 * **Robust & Cross-Platform:** Built with standard Python libraries for wide compatibility.
 
@@ -41,7 +47,7 @@ This project uses PlatformIO for firmware management, which makes setup simple a
 * **Prerequisites:** Python 3.6+ is required.
 * **Clone the Repository:**
     ```bash
-    git clone 
+    git clone (https://github.com/Shanwis/Desk-Comfort-Detector)
     cd Desk-Comfort-Detector
     ```
 * **Create a Virtual Environment (Recommended):**
