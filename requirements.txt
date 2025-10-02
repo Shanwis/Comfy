@@ -1,0 +1,5 @@
+plyer
+pyserial
+dbus-python
+argparse
+pygame

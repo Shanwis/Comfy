@@ -1,0 +1,12 @@
+# Virtual Environments
+/venv
+/env
+.venv
+*.venv
+
+# Generated output files
+/output
+
+# IDEs and Editors
+.vscode/
+.idea/
