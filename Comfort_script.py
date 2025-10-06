@@ -48,13 +48,18 @@ def send_notification(title,message): # function for sending notificaitions
 def main():
     root = tk.Tk()
     root.title("Desk Comfort Detector")
-    root.geometry("400x200")
+    root.geometry("400x375")
     root.resizable(False,False)
     root.configure(bg='#2E2E2E')
     #Assigning the special tkinter variables 
     temp_var = tk.StringVar(value="--°C")
     humidity_var = tk.StringVar(value="--%")
     status_var = tk.StringVar(value = "Connecting....")
+    temp_thresh_var = tk.StringVar(value = f"{TEMP_LOW}°C to {TEMP_HIGH}°C")
+    hum_thresh_var = tk.StringVar(value = f"{HUM_LOW}% to {HUM_HIGH}%")
+
+    #Initialize ser
+    ser = None
 
     label_font = font.Font(family="Helvetica", size=16)
     thresh_font = font.Font(family="Helvetica", size=12, slant="italic")
@@ -65,15 +70,81 @@ def main():
     tk.Label(root, text="Temperature:", font = label_font,fg='white',bg='#2E2E2E').grid(row=0,column=0,padx=20,pady=(10,0), sticky="w")
     temp_value_label = tk.Label(root,textvariable=temp_var, font = value_font,fg='#00BFFF',bg='#2E2E2E')
     temp_value_label.grid(row=0,column=1,rowspan=2,padx=20,pady=10,sticky="nse")
-    tk.Label(root, text=F"{TEMP_LOW} to {TEMP_HIGH}", font = thresh_font,fg='white',bg='#2E2E2E').grid(row=1,column=0,padx=20,pady=(0, 10), sticky="w")
+    tk.Label(root, textvariable=temp_thresh_var, font = thresh_font,fg='white',bg='#2E2E2E').grid(row=1,column=0,padx=20,pady=(0, 10), sticky="w")
+    
     #setting up humidity
     tk.Label(root, text='Humidity: ', font = label_font,fg='white',bg='#2E2E2E').grid(row=2,column=0,padx=20,pady=(10,0),sticky="w")
     humidity_value_label = tk.Label(root, textvariable=humidity_var, font= value_font,fg='#00BFFF',bg='#2E2E2E')
     humidity_value_label.grid(row=2,column=1,rowspan=2,padx=20,pady=10,sticky="nse")
-    tk.Label(root, text=F"{HUM_LOW}% to {HUM_HIGH}%", font = thresh_font,fg='white',bg='#2E2E2E').grid(row=3,column=0,padx=20,pady=(0,10), sticky="w")
+    tk.Label(root, textvariable=hum_thresh_var, font = thresh_font,fg='white',bg='#2E2E2E').grid(row=3,column=0,padx=20,pady=(0,10), sticky="w")
+    
+    #Setting up Settings
+    settings_frame = tk.LabelFrame(root, text="Settings", font=label_font, fg = 'white', bg="#2E2E2E", padx = 10, pady = 10)
+    settings_frame.grid(row=4, column =0, columnspan=2, padx=10,pady=10, sticky = "ew")
+
+    settings_frame.grid_columnconfigure(0, weight=1)
+    settings_frame.grid_columnconfigure(1, weight=1)
+    settings_frame.grid_columnconfigure(2, weight=1)
+    settings_frame.grid_columnconfigure(3, weight=1)
+
+    temp_low_entry_var = tk.StringVar(value = str(TEMP_LOW))
+    temp_high_entry_var = tk.StringVar(value = str(TEMP_HIGH))
+    hum_low_entry_var = tk.StringVar(value = str(HUM_LOW))
+    hum_high_entry_var = tk.StringVar(value = str(HUM_HIGH))
+
+    tk.Label(settings_frame, text="Temp High (°C):", fg="white", bg="#2E2E2E").grid(row = 0, column=0, padx=10, pady=10,sticky = "w")
+    tk.Entry(settings_frame, textvariable=temp_high_entry_var, width=6).grid(row=0,column=1, pady=5)
+
+    tk.Label(settings_frame, text="Temp Low (°C):", fg = "white", bg = "#2E2E2E").grid(row=1,column=0,padx=10, pady=10,sticky='w')
+    tk.Entry(settings_frame, textvariable=temp_low_entry_var, width=6).grid(row=1,column=1, pady=5)
+
+    tk.Label(settings_frame, text="Humid High (%):", fg="white", bg="#2E2E2E").grid(row=0, column=2, padx=10, pady=10,sticky="e")
+    tk.Entry(settings_frame, textvariable=hum_high_entry_var, width=6).grid(row=0, column=3, pady=5)
+    
+    tk.Label(settings_frame, text="Humid Low (%):", fg="white", bg="#2E2E2E").grid(row=1, column=2, padx=10, pady=10,sticky="e")
+    tk.Entry(settings_frame, textvariable=hum_low_entry_var, width=6).grid(row=1, column=3, pady=5)
+
+    def update_thresholds():
+        global TEMP_HIGH, TEMP_LOW, HUM_HIGH, HUM_LOW
+
+        try:
+            new_th = float(temp_high_entry_var.get())
+            new_tl = float(temp_low_entry_var.get())
+            new_hh = float(hum_high_entry_var.get())
+            new_hl = float(hum_low_entry_var.get())
+
+            TEMP_HIGH=new_th
+            TEMP_LOW=new_tl
+            HUM_HIGH=new_hh
+            HUM_LOW=new_hl
+
+            temp_thresh_var.set(f"{TEMP_LOW}°C to {TEMP_HIGH}°C")
+            hum_thresh_var.set(f"{HUM_LOW}% to {HUM_HIGH}%")
+
+            command = f"SET:{TEMP_HIGH},{TEMP_LOW},{HUM_HIGH},{HUM_LOW}\n"
+            if ser and ser.is_open:
+                ser.write(command.encode('utf-8')) # Encode the string to bytes and send it
+                status_var.set("Status: Thresholds updated successfully!")
+                print("thresholds updated")
+            else:
+                status_var.set("Error: Cannot update. Not connected.")
+                print("Cannot send update command: serial port not open.")
+
+        except ValueError:
+            status_var.set("Invalid inputs. Please enter numbers only.")
+            temp_high_entry_var.set(TEMP_HIGH)
+            temp_low_entry_var.set(TEMP_LOW)
+            hum_high_entry_var.set(HUM_HIGH)
+            hum_low_entry_var.set(HUM_LOW)
+            print("Error updating thresholds: Invalid input.")
+
+    update_button = tk.Button(settings_frame, text="Update", command = lambda: update_thresholds())
+    update_button.grid(row=2, column=0, columnspan=4, sticky="ew")
+
     #Setting up status
     status_value_label = tk.Label(root,textvariable=status_var, font=status_font,fg='grey',bg='#2E2E2E')
-    status_value_label.grid(row=4, column=0, columnspan=2, padx=10, pady=10, sticky="ew")
+    status_value_label.grid(row=5, column=0, columnspan=2, padx=10, pady=10, sticky="ew")
+    
     #Arranging in grid
     root.grid_columnconfigure(1, weight=1)
 
@@ -81,6 +152,7 @@ def main():
         ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1)
         time.sleep(2) # for safe communication
         status_var.set(f"Successful Connection to {SERIAL_PORT}") #Set status
+        update_thresholds()
     except serial.SerialException as e:
         status_var.set(f"Error: Could not open serial port {SERIAL_PORT}") # set status, temp, humidity
         temp_var.set("Error")
@@ -138,7 +210,7 @@ def main():
             ser.close()
             root.after(5000,main)
             return
-        root.after(1000, update_readings)
+        root.after(500, update_readings)
     
     pygame.mixer.init()
     update_readings()
