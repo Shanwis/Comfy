@@ -1,4 +1,4 @@
-# Desk Comfort Detector
+# Comfy: Desk Comfort Detector
 ![Python](https://img.shields.io/badge/python-3.6+-blue.svg)
 ![PlatformIO](https://img.shields.io/badge/PlatformIO-ESP32-orange.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
