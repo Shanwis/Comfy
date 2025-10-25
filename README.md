@@ -3,7 +3,7 @@
 ![PlatformIO](https://img.shields.io/badge/PlatformIO-ESP32-orange.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-Hey guys, this is my first IoT related project,a real-time desktop application that monitors temperature and humidity at your desk using an ESP32 and a DHT sensor, while providing a clean GUI and alerts for uncomfortable conditions.
+Hey guys, this is my first embedded systems related project,a real-time desktop application that monitors temperature and humidity at your desk using an ESP32 and a DHT sensor, while providing a clean GUI and alerts for uncomfortable conditions.
 
 ![Components](./Screenshots/PhysicalParts.jpeg)
 
